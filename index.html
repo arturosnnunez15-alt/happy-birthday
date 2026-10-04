@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Feliz Cumpleaños! ✨🎂</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #0d1b2a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      color: #fff;
+      position: relative;
+    }
+
+    /* Canvas para Fuegos Artificiales */
+    #canvas-fireworks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Contenedor principal de Globos */
+    .balloon-container {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -100px;
+      width: 45px;
+      height: 55px;
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      animation: floatUp 8s infinite linear;
+      opacity: 0.85;
+    }
+
+    .balloon::after {
+      content: "";
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 15px;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-120vh) rotate(15deg);
+        opacity: 0.2;
+      }
+    }
+
+    /* Tarjeta principal */
+    .card {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 28px;
+      padding: 35px 25px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      max-width: 390px;
+      width: 90%;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #ffb703;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(255, 183, 3, 0.5);
+    }
+
+    p.subtitle {
+      font-size: 1rem;
+      color: #e0e1dd;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* Animación de Flores SVG */
+    .flower-box {
+      width: 140px;
+      height: 140px;
+      margin: 10px 0 20px;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    /* Botón interactivo de música */
+    .music-btn {
+      background: linear-gradient(135deg, #ff007f, #7928ca);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(255, 0, 127, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .music-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(255, 0, 127, 0.6);
+    }
+
+    .music-btn:active {
+      transform: scale(0.95);
+    }
+
+    .footer-msg {
+      font-size: 0.85rem;
+      color: #a0aab2;
+      margin-top: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvas de Fuegos Artificiales -->
+  <canvas id="canvas-fireworks"></canvas>
+
+  <!-- Globos -->
+  <div class="balloon-container" id="balloons"></div>
+
+  <!-- Audio de Fondo (Canción libre de derechos / cumpleaños feliz suave) -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a221f7.mp3?filename=happy-birthday-155461.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Tarjeta -->
+  <div class="card">
+    <h1>¡Feliz Cumpleaños! 🎉✨</h1>
+    <p class="subtitle">
+      Que hoy y siempre tu vida se llene de luz, risas y momentos inolvidables. ¡Nunca dejes de brillar y crecer! 💖
+    </p>
+
+    <!-- Flores SVG -->
+    <div class="flower-box">
+      <svg viewBox="0 0 100 100" width="100%" height="100%">
+        <!-- Tallo 1 -->
+        <path d="M 50 90 Q 40 60 30 40" stroke="#4caf50" stroke-width="3" fill="none"/>
+        <!-- Tallo 2 -->
+        <path d="M 50 90 Q 50 55 50 35" stroke="#4caf50" stroke-width="3" fill="none"/>
+        <!-- Tallo 3 -->
+        <path d="M 50 90 Q 60 60 70 40" stroke="#4caf50" stroke-width="3" fill="none"/>
+        
+        <!-- Flor Izquierda -->
+        <circle cx="30" cy="40" r="10" fill="#ff4081" />
+        <circle cx="30" cy="40" r="4" fill="#ffd54f" />
+
+        <!-- Flor Centro -->
+        <circle cx="50" cy="35" r="12" fill="#ff80ab" />
+        <circle cx="50" cy="35" r="5" fill="#fff" />
+
+        <!-- Flor Derecha -->
+        <circle cx="70" cy="40" r="10" fill="#e040fb" />
+        <circle cx="70" cy="40" r="4" fill="#ffd54f" />
+      </svg>
+    </div>
+
+    <!-- Botón Música -->
+    <button class="music-btn" id="musicBtn">
+      <span>🎵</span> <span id="btnText">Toca para reproducir música</span>
+    </button>
+
+    <p class="footer-msg">Un pequeño detalle hecho especialmente para ti 🌸</p>
+  </div>
+
+  <script>
+    // --- 1. MÚSICA DE FONDO ---
+    const music = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+    const btnText = document.getElementById('btnText');
+    let isPlaying = false;
+
+    musicBtn.addEventListener('click', () => {
+      if (!isPlaying) {
+        music.play();
+        btnText.textContent = "Pausar música 🎶";
+        isPlaying = true;
+      } else {
+        music.pause();
+        btnText.textContent = "Reproducir música 🎵";
+        isPlaying = false;
+      }
+    });
+
+    // Intento de reproducción automática al tocar en cualquier parte de la pantalla
+    document.body.addEventListener('click', () => {
+      if (!isPlaying) {
+        music.play().then(() => {
+          btnText.textContent = "Pausar música 🎶";
+          isPlaying = true;
+        }).catch(() => {});
+      }
+    }, { once: true });
+
+    // --- 2. GENERADOR DE GLOBOS ---
+    const balloonsContainer = document.getElementById('balloons');
+    const colors = ['#ff4081', '#7c4dff', '#00e676', '#ffeb3b', '#ff9100', '#00b0ff'];
+
+    for (let i = 0; i < 18; i++) {
+      const balloon = document.createElement('div');
+      balloon.className = 'balloon';
+      balloon.style.left = `${Math.random() * 95}%`;
+      balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      balloon.style.animationDelay = `${Math.random() * 6}s`;
+      balloon.style.animationDuration = `${6 + Math.random() * 5}s`;
+      balloonsContainer.appendChild(balloon);
+    }
+
+    // --- 3. FUEGOS ARTIFICIALES (CANVAS) ---
+    const canvas = document.getElementById('canvas-fireworks');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = Math.random() * 2 + 1;
+        this.velocity = {
+          x: (Math.random() - 0.5) * 6,
+          y: (Math.random() - 0.5) * 6
+        };
+        this.alpha = 1;
+        this.friction = 0.98;
+        this.gravity = 0.03;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      update() {
+        this.velocity.x *= this.friction;
+        this.velocity.y *= this.friction;
+        this.velocity.y += this.gravity;
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.alpha -= 0.012;
+      }
+    }
+
+    let particles = [];
+
+    function createFirework(x, y) {
+      const particleCount = 40;
+      const fireworkColors = ['#ff4081', '#ffd54f', '#00e676', '#00b0ff', '#e040fb', '#ffffff'];
+      const color = fireworkColors[Math.floor(Math.random() * fireworkColors.length)];
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle(x, y, color));
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      ctx.fillStyle = 'rgba(13, 27, 42, 0.2)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (Math.random() < 0.05) {
+        createFirework(
+          Math.random() * canvas.width,
+          Math.random() * (canvas.height * 0.6)
+        );
+      }
+
+      particles.forEach((particle, index) => {
+        if (particle.alpha > 0) {
+          particle.update();
+          particle.draw();
+        } else {
+          particles.splice(index, 1);
+        }
+      });
+    }
+
+    animate();
+  </script>
+</body>
+</html>
